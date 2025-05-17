@@ -1,5 +1,115 @@
+<!-- filepath: /Users/aj/Workspace/Sample_WebApp_Python/SamplePython/templates/home.html -->
 {% extends 'base.html' %}
-
+<h1>{% block title %} Welcome to your Flask app!!! {% endblock %}</h1>
 {% block content %}
-    <h1>{% block title %} Welcome to your Flask app!!! {% endblock %}</h1>
+    <form id="searchForm">
+        <input type="text" id="searchQuery" placeholder="Search..." oninput="filterTable()">
+    </form>
+    
+    <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose a file to upload:</label>
+        <input type="file" id="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function filterTable() {
+            const query = document.getElementById('searchQuery').value.toLowerCase();
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let match = false;
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(query)) {
+                        match = true;
+                    }
+                });
+                row.style.display = match ? '' : 'none';
+            });
+        }
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('File uploaded successfully!');
+                    location.reload(); // Reload the page to see the updated data
+                } else {
+                    alert('File upload failed.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <style>
+        #dataTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #dataTable th, #dataTable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        #dataTable th {
+            background-color: #f2f2f2;
+        }
+        #searchForm {
+            margin-bottom: 20px;
+        }
+        #uploadForm {
+            margin-bottom: 20px;
+        }
+        #searchQuery {
+            width: 200px;
+            padding: 5px;
+        }
+        #file {
+            margin-right: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        // Add any additional JavaScript here
+        // For example, you can add event listeners or other functions
+        // to enhance the functionality of your web app.
+        // Example: Adding a click event to the table rows
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('click', () => {
+                alert('Row clicked: ' + row.innerText);
+            });
+        });
+    </script>               
 {% endblock %}

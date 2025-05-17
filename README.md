@@ -21,3 +21,19 @@ To successfully run this example, we recommend the following VS Code extensions:
 - To test your app, ensure you have the dependencies from `dev-requirements.txt` installed in your environment
 - Navigate to the Test Panel to configure your Python test or by triggering the **Python: Configure Tests** command from the Command Palette
 - Run tests in the Test Panel or by clicking the Play Button next to the individual tests in the `test_app.py` file
+
+## Setting Up Azure SQL Database
+
+1. Create an Azure SQL Database and note the server name, database name, username, and password.
+2. Update the `config.py` file with your Azure SQL Database credentials.
+3. Ensure the `FileMetadata` table exists in your database:
+   ```sql
+   CREATE TABLE FileMetadata (
+       Id INT IDENTITY(1,1) PRIMARY KEY,
+       FileName NVARCHAR(255) NOT NULL
+   );
+   ```
+4. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
